@@ -13,6 +13,11 @@ export async function POST(request: NextRequest) {
     const realIp = request.headers.get('x-real-ip');
 const forwarded = request.headers.get('x-forwarded-for');
 
+console.log('ip headers', {
+  realIp: request.headers.get('x-real-ip'),
+  forwarded: request.headers.get('x-forwarded-for'),
+});
+
 const ip =
   realIp?.trim() ||
   forwarded?.split(',')[0]?.trim() ||
