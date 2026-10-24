@@ -5,8 +5,13 @@ export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
   try {
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
+    const realIp = request.headers.get('x-real-ip');
+const forwarded = request.headers.get('x-forwarded-for');
+
+const ip =
+  realIp?.trim() ||
+  forwarded?.split(',')[0]?.trim() ||
+  'unknown';
     const { error } = await getSupabase().from('access_events').insert({
       event_type: 'download',
       ip_address: ip,
