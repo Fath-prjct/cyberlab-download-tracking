@@ -10,8 +10,13 @@ export async function POST(request: NextRequest) {
     if (event !== 'page_view' && event !== 'download') {
       return NextResponse.json({ error: 'Invalid event.' }, { status: 400 });
     }
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
+    const realIp = request.headers.get('x-real-ip');
+const forwarded = request.headers.get('x-forwarded-for');
+
+const ip =
+  realIp?.trim() ||
+  forwarded?.split(',')[0]?.trim() ||
+  'unknown';
     const userAgent = (request.headers.get('user-agent') || 'unknown').slice(0, 500);
     const referrer = (request.headers.get('referer') || '').slice(0, 1000);
     const { error } = await getSupabase().from('access_events').insert({
